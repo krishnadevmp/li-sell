@@ -1,0 +1,45 @@
+.product-card {
+  height: 380px;
+}
+
+.product-form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.625rem;
+}
+
+.product-form-cancel-button {
+  color: grey;
+  background-color: transparent;
+  border: none;
+}
+
+.product-form-cancel-button:hover {
+  background-color: rgba(255, 0, 0, 0.1);
+  border: 1px solid rgba(255, 0, 0);
+  color: rgba(255, 0, 0);
+}
+
+.product-form-file {
+  display: flex;
+  flex-direction: row;
+  gap: 0.625rem;
+}
+
+.product-form-file-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.product-form-file-container button {
+  min-width: 2.25rem;
+}
+
+.product-form-file-container .product-form-cancel-button {
+  border: 1px solid grey;
+}
+
+.product-form-file-container .product-form-cancel-button:hover {
+  border: 1px solid red;
+}
