@@ -1,23 +1,29 @@
 import React from "react";
-import {
-  Card,
-  CardImg,
-  CardText,
-  CardBody,
-  CardTitle,
-  Button,
-} from "reactstrap";
+import { Link } from "react-router-dom";
+import { Button } from "reactstrap";
 
-const ProductCard = ({ productImage, productTitle, productDescription }) => {
+const ProductCard = ({ image, title, description, price, id }) => {
   return (
-    <Card className="product-card">
-      <CardImg alt="Card image cap" src={productImage} top width="100%" />
-      <CardBody>
-        <CardTitle tag="h5">{productTitle}</CardTitle>
-        <CardText>{productDescription}</CardText>
-        <Button color="primary">Buy</Button>
-      </CardBody>
-    </Card>
+    <div className="product-card product-card-height">
+      <div className="product-card-img">
+        <img alt="Card image cap" src={image} width="100%" height="100%" />
+      </div>
+      <div className="product-card-body">
+        <div>
+          <h5>{title}</h5>
+        </div>
+        <div className="product-card-body-text">{description}</div>
+        <div className="product-card-button-container">
+          <div className="">
+            <b>AED:</b>
+            <div>{price}</div>
+          </div>
+          <Link to={`/product/${id}`}>
+            <Button color="primary">View</Button>
+          </Link>
+        </div>
+      </div>
+    </div>
   );
 };
 

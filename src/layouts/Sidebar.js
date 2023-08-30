@@ -49,11 +49,6 @@ const navigation = [
     href: "/breadcrumbs",
     icon: "bi bi-link",
   },
-  {
-    title: "About",
-    href: "/about",
-    icon: "bi bi-people",
-  },
 ];
 
 const Sidebar = () => {

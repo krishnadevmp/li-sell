@@ -14,7 +14,7 @@ import {
   Button,
 } from "reactstrap";
 import Logo from "./Logo";
-import { ReactComponent as LogoWhite } from "../assets/images/logos/materialprowhite.svg";
+// import LogoWhite from "../assets/images/logos/favicon5.png";
 import user1 from "../assets/images/users/user4.jpg";
 
 const Header = () => {
@@ -35,8 +35,10 @@ const Header = () => {
         <div className="d-lg-block d-none me-5 pe-3">
           <Logo />
         </div>
+        <img />
         <NavbarBrand href="/">
-          <LogoWhite className=" d-lg-none" />
+          {/* <img src={LogoWhite} /> */}
+          {/* <LogoWhite className=" d-lg-none" /> */}
         </NavbarBrand>
         <Button
           color="primary"
@@ -63,11 +65,6 @@ const Header = () => {
 
       <Collapse navbar isOpen={isOpen}>
         <Nav className="me-auto" navbar>
-          <NavItem>
-            <Link to="/starter" className="nav-link">
-              Starter
-            </Link>
-          </NavItem>
           <NavItem>
             <Link to="add/product" className="nav-link">
               Add product

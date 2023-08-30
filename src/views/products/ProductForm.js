@@ -14,11 +14,12 @@ import {
 import { categories } from "./Constants";
 import "./Products.css";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addProduct } from "./ProductSlice";
 
 const ProductForm = () => {
   const location = useLocation();
   const isEdit = location.pathname.includes("edit");
-  const [images, setImages] = useState([{ fileName: "", fileData: "" }]);
   const [productData, setProductData] = useState({
     title: "",
     price: 0,
@@ -26,7 +27,25 @@ const ProductForm = () => {
     category: 0,
     contactNumber: "",
     address: "",
+    images: [{}],
   });
+  const dispatch = useDispatch();
+  const onChange = (event) =>
+    setProductData((prev) => {
+      let { value } = event.target;
+      if (event.target.name === "images") {
+        const images = [...prev.images];
+        images.pop();
+        images.push(URL.createObjectURL(event.target.files[0]));
+        value = images;
+      }
+
+      return {
+        ...prev,
+        [event.target.name]: value,
+      };
+    });
+
   return (
     <Row>
       <Col>
@@ -43,6 +62,8 @@ const ProductForm = () => {
                   id="productTitle"
                   name="title"
                   placeholder="Product title"
+                  value={productData.title}
+                  onChange={onChange}
                 />
               </FormGroup>
               <FormGroup>
@@ -52,6 +73,8 @@ const ProductForm = () => {
                   name="price"
                   placeholder="Price"
                   type="number"
+                  value={productData.price}
+                  onChange={onChange}
                 />
               </FormGroup>
               <FormGroup>
@@ -61,13 +84,23 @@ const ProductForm = () => {
                   name="description"
                   type="textarea"
                   placeholder="Product description"
+                  value={productData.description}
+                  onChange={onChange}
                 />
               </FormGroup>
               <FormGroup>
                 <Label for="category">Category</Label>
-                <Input id="category" name="category" type="select">
+                <Input
+                  id="category"
+                  name="category"
+                  type="select"
+                  onChange={onChange}
+                  value={productData.category}
+                >
                   {categories.map((category) => (
-                    <option key={category.id}>{category.title}</option>
+                    <option value={category.id} key={category.id}>
+                      {category.title}
+                    </option>
                   ))}
                 </Input>
               </FormGroup>
@@ -77,27 +110,40 @@ const ProductForm = () => {
                   id="contactNumber"
                   name="contactNumber"
                   placeholder="Phone"
+                  onChange={onChange}
+                  value={productData.contactNumber}
                 />
               </FormGroup>
               <FormGroup>
                 <Label for="address">Address</Label>
-                <Input id="address" name="address" type="textarea" />
+                <Input
+                  id="address"
+                  name="address"
+                  type="textarea"
+                  onChange={onChange}
+                  value={productData.address}
+                />
               </FormGroup>
               <FormGroup>
                 <Label>Images</Label>
                 <div className="product-form-file-container">
-                  {images.map((image, index) => (
+                  {productData.images.map((image, index) => (
                     <div key={index} className="product-form-file">
-                      <Input id={`images${index}`} name="images" type="file" />
+                      <Input
+                        id={`images${index}`}
+                        name="images"
+                        type="file"
+                        onChange={onChange}
+                      />
                       {index === 0 ? (
                         <Button
                           title="Add more images"
                           color="primary"
                           onClick={() =>
-                            setImages((prev) => [
+                            setProductData((prev) => ({
                               ...prev,
-                              { fileData: "", fileName: "" },
-                            ])
+                              images: [...prev.images, {}],
+                            }))
                           }
                         >
                           +
@@ -106,12 +152,13 @@ const ProductForm = () => {
                         <Button
                           className="product-form-cancel-button"
                           onClick={() =>
-                            setImages((prevImages) =>
-                              prevImages.filter(
+                            setProductData((prev) => ({
+                              ...prev,
+                              images: prev.images.filter(
                                 (_prevImage, prevImageIndex) =>
                                   prevImageIndex !== index
-                              )
-                            )
+                              ),
+                            }))
                           }
                         >
                           x
@@ -128,9 +175,11 @@ const ProductForm = () => {
                   </Button>
                 </div>
                 <div>
-                  <Button type="button" color="primary">{`${
-                    isEdit ? "Update" : "Add"
-                  }`}</Button>
+                  <Button
+                    type="button"
+                    color="primary"
+                    onClick={() => dispatch(addProduct(productData))}
+                  >{`${isEdit ? "Update" : "Add"}`}</Button>
                 </div>
               </div>
             </Form>

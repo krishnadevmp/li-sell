@@ -17,6 +17,9 @@ const Forms = lazy(() => import("../views/ui/Forms"));
 const Breadcrumbs = lazy(() => import("../views/ui/Breadcrumbs"));
 const ProductForm = lazy(() => import("../views/products/ProductForm.js"));
 const ProductList = lazy(() => import("../views/products/ProductList.js"));
+const ProductDetails = lazy(() =>
+  import("../views/products/ProductDetails.js")
+);
 
 /*****Routes******/
 
@@ -38,6 +41,7 @@ const ThemeRoutes = [
       { path: "/add/product", exact: true, element: <ProductForm /> },
       { path: "/edit/product", exact: true, element: <ProductForm /> },
       { path: "/products", exact: true, element: <ProductList /> },
+      { path: "/product/:id", exact: true, element: <ProductDetails /> },
     ],
   },
 ];

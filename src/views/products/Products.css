@@ -1,5 +1,12 @@
 .product-card {
-  height: 380px;
+  margin: 0;
+  border-radius: 4px;
+  box-shadow: 0 0 10px 0 hsla(203, 6%, 50%, 0.2);
+  cursor: pointer;
+}
+
+.product-card-height {
+  height: 20.5rem;
 }
 
 .product-form-buttons {
@@ -42,4 +49,52 @@
 
 .product-form-file-container .product-form-cancel-button:hover {
   border: 1px solid red;
+}
+
+.product-card-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 0.625rem;
+}
+
+.product-card-body {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 0.625rem;
+}
+
+.product-card-img {
+  height: 13.5rem;
+}
+
+.product-card-body-text {
+  flex-grow: 1;
+}
+
+.product-card-button-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.product-card-button-container div {
+  display: flex;
+  gap: 0.2rem;
+}
+
+.product-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.product-details-body {
+  gap: 0.625rem;
+}
+
+.product-details-img {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.625rem;
 }
