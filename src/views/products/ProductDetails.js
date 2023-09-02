@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { Button } from "reactstrap";
+import { Button, UncontrolledCarousel } from "reactstrap";
 import "./Products.css";
 
 const ProductDetails = () => {
@@ -15,25 +15,29 @@ const ProductDetails = () => {
         {product.title}
       </h6>
       <div className="p-4 product-details-body product-details">
-        <h2>Material React Admin Pro Version</h2>
         <h5>{product.description}</h5>
-
         <h6>AED:{` ${product.price}`}</h6>
         <h6>Contact:{` ${product.contactNumber}`}</h6>
-        <div className="product-details-img product-card-container">
-          {Array.isArray(product?.images) &&
-            product?.images.map((i) => (
-              <img className="w-50 h-50" src={i} alt="Product image" />
-            ))}
-        </div>
-        <Button
+        <UncontrolledCarousel
+          style={{ height: "30rem" }}
+          items={
+            Array.isArray(product?.images) &&
+            product?.images.map((i, index) => ({
+              altText: index,
+              caption: "",
+              key: 1,
+              src: i,
+            }))
+          }
+        />
+        {/* <Button
           className="mt-3"
           color="primary"
           href="https://wrappixel.com/templates/materialpro-react-admin/?ref=33"
           target="_blank"
         >
           Check Pro Version
-        </Button>
+        </Button> */}
       </div>
     </div>
   );

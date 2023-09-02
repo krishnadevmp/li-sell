@@ -10,7 +10,7 @@ const FullLayout = () => {
       <Header />
       <div className="pageWrapper d-lg-flex">
         {/********Sidebar**********/}
-        <aside className="sidebarArea shadow" id="sidebarArea">
+        <aside hidden className="sidebarArea shadow" id="sidebarArea">
           <Sidebar />
         </aside>
         {/********Content Area**********/}

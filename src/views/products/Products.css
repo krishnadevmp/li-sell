@@ -98,3 +98,7 @@
   grid-template-columns: 1fr 1fr;
   gap: 0.625rem;
 }
+
+.carousel-item img {
+  height: 30rem;
+}

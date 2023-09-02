@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Card,
   Row,
@@ -19,6 +19,7 @@ import { addProduct } from "./ProductSlice";
 
 const ProductForm = () => {
   const location = useLocation();
+  const navigateTo = useNavigate();
   const isEdit = location.pathname.includes("edit");
   const [productData, setProductData] = useState({
     title: "",
@@ -178,7 +179,10 @@ const ProductForm = () => {
                   <Button
                     type="button"
                     color="primary"
-                    onClick={() => dispatch(addProduct(productData))}
+                    onClick={() => {
+                      dispatch(addProduct(productData));
+                      navigateTo("/products");
+                    }}
                   >{`${isEdit ? "Update" : "Add"}`}</Button>
                 </div>
               </div>

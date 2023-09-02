@@ -1,5 +1,4 @@
 import { lazy } from "react";
-import { Navigate } from "react-router-dom";
 
 /****Layouts*****/
 const FullLayout = lazy(() => import("../layouts/FullLayout.js"));
@@ -20,6 +19,8 @@ const ProductList = lazy(() => import("../views/products/ProductList.js"));
 const ProductDetails = lazy(() =>
   import("../views/products/ProductDetails.js")
 );
+const LoginForm = lazy(() => import("../views/account/Login.js"));
+const Search = lazy(() => import("../views/search.js/Search.js"));
 
 /*****Routes******/
 
@@ -28,7 +29,9 @@ const ThemeRoutes = [
     path: "/",
     element: <FullLayout />,
     children: [
-      { path: "/", element: <Navigate to="/starter" /> },
+      { path: "/login", exact: true, element: <LoginForm /> },
+      { path: "/search", exact: true, element: <Search /> },
+      // { path: "/", element: <Navigate to="/starter" /> },
       { path: "/starter", exact: true, element: <Starter /> },
       { path: "/alerts", exact: true, element: <Alerts /> },
       { path: "/badges", exact: true, element: <Badges /> },

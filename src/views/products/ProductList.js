@@ -2,15 +2,19 @@ import { Row } from "reactstrap";
 import "./Products.css";
 import ProductCard from "./ProductCard";
 import { useSelector } from "react-redux";
+import Search from "../search.js/Search";
 
 const ProductList = () => {
-  const { products } = useSelector((state) => state.products);
+  const { products, searchResultProducts } = useSelector(
+    (state) => state.products
+  );
   return (
     <div>
+      <Search />
       <Row>
         <h5 className="mb-3 mt-3">Products</h5>
         <div className="product-card-container">
-          {products.map((item, index) => (
+          {searchResultProducts.map((item, index) => (
             <ProductCard
               key={`${item.title}${index}`}
               image={item.images?.length ? item.images[0] : ""}
