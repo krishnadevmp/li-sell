@@ -1,10 +1,52 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { ServiceCalls } from "../../api/apiService";
 
 const initialState = {
   products: [],
   searchResultProducts: [],
   isSearched: false,
+  isLoading: false,
 };
+
+export const fetchProducts = createAsyncThunk(
+  "fetchProducts",
+  async ({ offset, limit, filter, sortBy }, { rejectWithValue }) => {
+    try {
+      const response = await ServiceCalls.get("Product");
+
+      if (response?.status === 204) {
+        return [];
+      }
+
+      if (response.status === 200) {
+        return response.data;
+      }
+      return [];
+    } catch (error) {
+      // TODO
+      const errorData = JSON.parse(error.response.data);
+      return rejectWithValue(errorData.title);
+    }
+  }
+);
+
+export const postProduct = createAsyncThunk(
+  "postProduct",
+  async (body, { rejectWithValue }) => {
+    try {
+      const response = await ServiceCalls.post("Product", body);
+
+      if (response.status === 200) {
+        return response.data;
+      }
+      return {};
+    } catch (error) {
+      // TODO
+      const errorData = JSON.parse(error.response.data);
+      return rejectWithValue(errorData.title);
+    }
+  }
+);
 
 export const productSlice = createSlice({
   name: "productSlice",
@@ -30,6 +72,29 @@ export const productSlice = createSlice({
     setIsSearched: (state, action) => {
       state.isSearched = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchProducts.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(fetchProducts.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.products = action.payload;
+      state.searchResultProducts = action.payload;
+    });
+    builder.addCase(fetchProducts.rejected, (state, action) => {
+      state.isLoading = false;
+    });
+    builder.addCase(postProduct.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(postProduct.fulfilled, (state, action) => {
+      state.isLoading = false;
+      console.log(action.payload);
+    });
+    builder.addCase(postProduct.rejected, (state, action) => {
+      state.isLoading = false;
+    });
   },
 });
 

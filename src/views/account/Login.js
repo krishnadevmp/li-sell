@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   Row,
@@ -11,28 +11,33 @@ import {
   Label,
   Input,
 } from "reactstrap";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "./AccountSlice";
+import "./Login.css";
 
 const LoginForm = () => {
   const navigateTo = useNavigate();
-  const [productData, setProductData] = useState({
-    title: "",
-    price: 0,
-    description: "",
-    category: 0,
-    contactNumber: "",
-    address: "",
-    images: [{}],
+  const dispatch = useDispatch();
+  const { error, isLoggedIn } = useSelector((state) => state.account);
+  const [loginData, setLoginData] = useState({
+    userName: "",
+    password: "",
   });
   const onChange = (event) =>
-    setProductData((prev) => {
+    setLoginData((prev) => {
       let { value } = event.target;
       return {
         ...prev,
         [event.target.name]: value,
       };
     });
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigateTo("/products");
+    }
+  }, [isLoggedIn]);
 
   return (
     <Row>
@@ -43,34 +48,36 @@ const LoginForm = () => {
             Login
           </CardTitle>
           <CardBody>
-            <Form>
+            <Form onSubmit={(e) => e.preventDefault()}>
               <FormGroup>
                 <Label for="userName">Username</Label>
                 <Input
                   id="userName"
                   name="userName"
                   placeholder="Username"
-                  value={productData.title}
+                  value={loginData.title}
                   onChange={onChange}
                 />
               </FormGroup>
               <FormGroup>
                 <Label for="password">Password</Label>
                 <Input
+                  type="password"
                   id="password"
                   name="password"
                   placeholder="Password"
-                  value={productData.title}
+                  value={loginData.title}
                   onChange={onChange}
                 />
               </FormGroup>
+              {error && <div className="error-message">{error}</div>}
               <div className="product-form-buttons">
                 <div>
                   <Button
-                    type="button"
+                    type="submit"
                     color="primary"
                     onClick={() => {
-                      navigateTo("/products");
+                      dispatch(login(loginData));
                     }}
                   >
                     Login

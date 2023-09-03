@@ -12,6 +12,7 @@ const Search = () => {
     <div className="Search">
       <div className="Search-input">
         <Input
+          placeholder="Search for a product"
           onChange={(e) => {
             setSearchValue(e.target.value);
           }}

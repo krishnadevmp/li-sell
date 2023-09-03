@@ -3,6 +3,9 @@
   border-radius: 4px;
   box-shadow: 0 0 10px 0 hsla(203, 6%, 50%, 0.2);
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .product-card-height {
@@ -60,8 +63,8 @@
 .product-card-body {
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
   padding: 0.625rem;
+  justify-content: flex-end;
 }
 
 .product-card-img {
@@ -70,6 +73,7 @@
 
 .product-card-body-text {
   flex-grow: 1;
+  overflow: hidden;
 }
 
 .product-card-button-container {
@@ -87,6 +91,7 @@
 .product-details {
   display: flex;
   flex-direction: column;
+  gap: 0.625rem;
 }
 
 .product-details-body {

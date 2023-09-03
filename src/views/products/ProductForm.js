@@ -13,9 +13,9 @@ import {
 } from "reactstrap";
 import { categories } from "./Constants";
 import "./Products.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { addProduct } from "./ProductSlice";
+import { addProduct, postProduct } from "./ProductSlice";
 
 const ProductForm = () => {
   const location = useLocation();
@@ -31,6 +31,11 @@ const ProductForm = () => {
     images: [{}],
   });
   const dispatch = useDispatch();
+  useEffect(() => {
+    if (!localStorage.getItem("userName")) {
+      navigateTo("/login");
+    }
+  });
   const onChange = (event) =>
     setProductData((prev) => {
       let { value } = event.target;
@@ -52,7 +57,6 @@ const ProductForm = () => {
       <Col>
         <Card>
           <CardTitle tag="h6" className="border-bottom p-3 mb-0">
-            <i className="bi bi-bell me-2"> </i>
             {`${isEdit ? "Edit" : "Add"} product`}
           </CardTitle>
           <CardBody>
@@ -180,7 +184,13 @@ const ProductForm = () => {
                     type="button"
                     color="primary"
                     onClick={() => {
-                      dispatch(addProduct(productData));
+                      // dispatch(addProduct(productData));
+                      dispatch(
+                        postProduct({
+                          ...productData,
+                          postedBy: localStorage.getItem("userName"),
+                        })
+                      );
                       navigateTo("/products");
                     }}
                   >{`${isEdit ? "Update" : "Add"}`}</Button>

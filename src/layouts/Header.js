@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Navbar,
@@ -16,6 +16,8 @@ import {
 import Logo from "./Logo";
 // import LogoWhite from "../assets/images/logos/favicon5.png";
 import user1 from "../assets/images/users/user4.jpg";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../views/account/AccountSlice";
 
 const Header = () => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -30,6 +32,8 @@ const Header = () => {
     document.getElementById("sidebarArea").classList.toggle("showSidebar");
   };
   const navigateTo = useNavigate();
+  const { isLoggedIn } = useSelector((state) => state.account);
+  const dispatch = useDispatch();
   return (
     <Navbar color="primary" dark expand="md" className="fix-header">
       <div className="d-flex align-items-center">
@@ -66,11 +70,15 @@ const Header = () => {
 
       <Collapse navbar isOpen={isOpen}>
         <Nav className="me-auto" navbar>
-          <NavItem>
-            <Link to="add/product" className="nav-link">
-              Add product
-            </Link>
-          </NavItem>
+          {isLoggedIn && (
+            <NavItem>
+              {
+                <Link to="add/product" className="nav-link">
+                  Add product
+                </Link>
+              }
+            </NavItem>
+          )}
           <NavItem>
             <Link to="/products" className="nav-link">
               Products
@@ -88,27 +96,33 @@ const Header = () => {
             </DropdownMenu>
           </UncontrolledDropdown>
         </Nav>
-        <Dropdown isOpen={dropdownOpen} toggle={toggle}>
-          <DropdownToggle color="transparent">
-            <img
-              src={user1}
-              alt="profile"
-              className="rounded-circle"
-              width="30"
-            ></img>
-          </DropdownToggle>
-          <DropdownMenu>
-            <DropdownItem header>Info</DropdownItem>
-            <DropdownItem>My Account</DropdownItem>
-            <DropdownItem>Edit Profile</DropdownItem>
-            <DropdownItem divider />
-            <DropdownItem>My Balance</DropdownItem>
-            <DropdownItem>Inbox</DropdownItem>
-            <DropdownItem onClick={() => navigateTo("/login")}>
-              Logout
-            </DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
+        {isLoggedIn ? (
+          <Dropdown isOpen={dropdownOpen} toggle={toggle}>
+            <DropdownToggle color="transparent">
+              <img
+                src={user1}
+                alt="profile"
+                className="rounded-circle"
+                width="30"
+              ></img>
+            </DropdownToggle>
+            <DropdownMenu>
+              <DropdownItem>My products</DropdownItem>
+              <DropdownItem
+                onClick={() => {
+                  dispatch(logout());
+                  navigateTo("/login");
+                }}
+              >
+                Logout
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        ) : (
+          <Dropdown isOpen={dropdownOpen} toggle={() => navigateTo("/login")}>
+            <DropdownToggle color="transparent">Login</DropdownToggle>
+          </Dropdown>
+        )}
       </Collapse>
     </Navbar>
   );

@@ -1,13 +1,19 @@
 import { Row } from "reactstrap";
 import "./Products.css";
 import ProductCard from "./ProductCard";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Search from "../search.js/Search";
+import { useEffect } from "react";
+import { fetchProducts } from "./ProductSlice";
 
 const ProductList = () => {
   const { products, searchResultProducts } = useSelector(
     (state) => state.products
   );
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchProducts({}));
+  }, []);
   return (
     <div>
       <Search />
