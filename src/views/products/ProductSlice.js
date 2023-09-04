@@ -32,13 +32,40 @@ export const fetchProducts = createAsyncThunk(
 
 export const postProduct = createAsyncThunk(
   "postProduct",
-  async (body, { rejectWithValue }) => {
+  async (body, { dispatch, rejectWithValue }) => {
     try {
+      debugger;
       const response = await ServiceCalls.post("Product", body);
 
-      if (response.status === 200) {
+      if (response.status === 201) {
+        debugger;
+        const productImages = await Promise.all(
+          body.images.map(async (i) => ({
+            imageData: await i,
+            productId: `${response.data.id}`,
+          }))
+        );
+
+        dispatch(postProductImages(productImages));
         return response.data;
       }
+      return {};
+    } catch (error) {
+      // TODO
+      const errorData = JSON.parse(error.response.data);
+      return rejectWithValue(errorData.title);
+    }
+  }
+);
+
+export const postProductImages = createAsyncThunk(
+  "postProductImages",
+  async (productImages, { rejectWithValue }) => {
+    try {
+      debugger;
+      productImages.forEach((productImage) => {
+        ServiceCalls.post("Image", productImage);
+      });
       return {};
     } catch (error) {
       // TODO

@@ -3,6 +3,7 @@ import ThemeRoutes from "./routes/Router";
 import { Provider } from "react-redux";
 import { store } from "./Store";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { Spinner } from "reactstrap";
 
 const App = () => {
   const routing = useRoutes(ThemeRoutes);

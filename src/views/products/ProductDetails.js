@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, UncontrolledCarousel } from "reactstrap";
+import { UncontrolledCarousel } from "reactstrap";
 import "./Products.css";
 
 const ProductDetails = () => {
@@ -16,13 +16,14 @@ const ProductDetails = () => {
       <UncontrolledCarousel
         style={{ height: "30rem" }}
         items={
-          Array.isArray(product?.images) &&
-          product?.images.map((i, index) => ({
-            altText: index,
-            caption: "",
-            key: 1,
-            src: i,
-          }))
+          Array.isArray(product?.images)
+            ? product?.images.map((i, index) => ({
+                altText: index,
+                caption: "",
+                key: 1,
+                src: i,
+              }))
+            : []
         }
       />
       <div className="p-4 product-details-body product-details">
@@ -38,14 +39,6 @@ const ProductDetails = () => {
             Show
           </div>
         )}
-        {/* <Button
-          className="mt-3"
-          color="primary"
-          href="https://wrappixel.com/templates/materialpro-react-admin/?ref=33"
-          target="_blank"
-        >
-          Check Pro Version
-        </Button> */}
       </div>
     </div>
   );

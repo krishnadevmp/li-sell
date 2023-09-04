@@ -16,6 +16,7 @@ import "./Products.css";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { addProduct, postProduct } from "./ProductSlice";
+import { convertToBase64 } from "../../Utils";
 
 const ProductForm = () => {
   const location = useLocation();
@@ -37,12 +38,13 @@ const ProductForm = () => {
     }
   });
   const onChange = (event) =>
-    setProductData((prev) => {
+    setProductData(async (prev) => {
       let { value } = event.target;
+      debugger;
       if (event.target.name === "images") {
         const images = [...prev.images];
         images.pop();
-        images.push(URL.createObjectURL(event.target.files[0]));
+        images.push(convertToBase64(event.target.files[0]));
         value = images;
       }
 
@@ -132,7 +134,7 @@ const ProductForm = () => {
               <FormGroup>
                 <Label>Images</Label>
                 <div className="product-form-file-container">
-                  {productData.images.map((image, index) => (
+                  {productData.images?.map((image, index) => (
                     <div key={index} className="product-form-file">
                       <Input
                         id={`images${index}`}
@@ -175,7 +177,11 @@ const ProductForm = () => {
               </FormGroup>
               <div className="product-form-buttons">
                 <div>
-                  <Button type="reset" className="product-form-cancel-button">
+                  <Button
+                    onClick={() => navigateTo("/products")}
+                    type="reset"
+                    className="product-form-cancel-button"
+                  >
                     Cancel
                   </Button>
                 </div>
@@ -184,14 +190,12 @@ const ProductForm = () => {
                     type="button"
                     color="primary"
                     onClick={() => {
-                      // dispatch(addProduct(productData));
                       dispatch(
                         postProduct({
                           ...productData,
                           postedBy: localStorage.getItem("userName"),
                         })
                       );
-                      navigateTo("/products");
                     }}
                   >{`${isEdit ? "Update" : "Add"}`}</Button>
                 </div>
