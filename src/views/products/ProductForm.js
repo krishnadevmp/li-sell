@@ -16,7 +16,7 @@ import "./Products.css";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProductsById, postProduct, putProduct } from "./ProductSlice";
-import { toBase64 } from "../../Utils";
+import { prefixBase64, toBase64 } from "../../Utils";
 import { Skeleton } from "@mui/material";
 
 const defaultProduct = {
@@ -186,51 +186,74 @@ const ProductForm = () => {
                 <FormGroup>
                   <Label>Images</Label>
                   <div className="product-form-file-container">
-                    {productData.productImageDatas?.map((image, index) => (
-                      <div key={index} className="product-form-file">
-                        <Input
-                          id={`images${index}`}
-                          name="productImageDatas"
-                          type="file"
-                          onChange={onChange}
-                        />
-                        {index === 0 ? (
-                          <Button
-                            disabled={isLoading}
-                            title="Add more images"
-                            color="primary"
-                            onClick={() =>
-                              setProductData((prev) => ({
-                                ...prev,
-                                productImageDatas: [
-                                  ...prev.productImageDatas,
-                                  {},
-                                ],
-                              }))
-                            }
-                          >
-                            +
-                          </Button>
-                        ) : (
-                          <Button
-                            disabled={isLoading}
-                            className="product-form-cancel-button"
-                            onClick={() =>
-                              setProductData((prev) => ({
-                                ...prev,
-                                productImageDatas:
-                                  prev.productImageDatas.filter(
-                                    (_prevImage, prevImageIndex) =>
-                                      prevImageIndex !== index
-                                  ),
-                              }))
-                            }
-                          >
-                            x
-                          </Button>
-                        )}
-                      </div>
-                    ))}
+                    {isEdit ? (
+                      <>
+                        <div
+                          style={{
+                            display: "grid",
+                            gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr",
+                            gap: "0.625rem",
+                          }}
+                        >
+                          {productData.productImageDatas?.map((data) => (
+                            <div className="product-card-img">
+                              <img
+                                alt="Card image cap"
+                                src={prefixBase64(data.imageData)}
+                                width="100%"
+                                height="100%"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    ) : (
+                      productData.productImageDatas?.map((image, index) => (
+                        <div key={index} className="product-form-file">
+                          <Input
+                            id={`images${index}`}
+                            name="productImageDatas"
+                            type="file"
+                            onChange={onChange}
+                          />
+                          {index === 0 ? (
+                            <Button
+                              disabled={isLoading}
+                              title="Add more images"
+                              color="primary"
+                              onClick={() =>
+                                setProductData((prev) => ({
+                                  ...prev,
+                                  productImageDatas: [
+                                    ...prev.productImageDatas,
+                                    {},
+                                  ],
+                                }))
+                              }
+                            >
+                              +
+                            </Button>
+                          ) : (
+                            <Button
+                              disabled={isLoading}
+                              className="product-form-cancel-button"
+                              onClick={() =>
+                                setProductData((prev) => ({
+                                  ...prev,
+                                  productImageDatas:
+                                    prev.productImageDatas.filter(
+                                      (_prevImage, prevImageIndex) =>
+                                        prevImageIndex !== index
+                                    ),
+                                }))
+                              }
+                            >
+                              x
+                            </Button>
+                          )}
+                        </div>
+                      ))
+                    )}
                   </div>
                 </FormGroup>
                 <div className="product-form-buttons">
