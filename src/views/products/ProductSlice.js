@@ -57,7 +57,6 @@ export const postProduct = createAsyncThunk(
   "postProduct",
   async (body, { dispatch, rejectWithValue }) => {
     try {
-      debugger;
       const productBody = {
         ...body,
         imageData: trimBase64Prefix(await body.productImageDatas[0]),
@@ -65,7 +64,6 @@ export const postProduct = createAsyncThunk(
       const response = await ServiceCalls.post("Product", productBody);
 
       if (response.status === 201) {
-        debugger;
         if (Object.keys(body?.productImageDatas ?? {}).length) {
           const productImages = await Promise.all(
             body.productImageDatas.map(async (i) => ({
@@ -200,7 +198,6 @@ export const productSlice = createSlice({
       state.isLoading = false;
     });
     builder.addCase(postProduct.rejected, (state, action) => {
-      debugger;
       toast("Product couldn't be added", { type: "error" });
       state.isLoading = false;
     });
