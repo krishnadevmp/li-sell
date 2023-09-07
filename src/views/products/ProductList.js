@@ -47,7 +47,7 @@ const ProductList = () => {
             : productsToDisplay.map((item, index) => (
                 <ProductCard
                   key={`${item.title}${index}`}
-                  image={item.images?.length ? item.images[0] : ""}
+                  imageData={item.imageData ?? ""}
                   title={item.title}
                   description={item.description}
                   price={item.price}

@@ -6,12 +6,14 @@ import { ReactComponent as IconEdit } from "../../assets/images/IconEdit.svg";
 import { useEffect } from "react";
 import { fetchProductsById } from "./ProductSlice";
 import { ReactComponent as IconView } from "../../assets/images/IconView.svg";
+import { prefixBase64 } from "../../Utils";
 
 const ProductDetails = () => {
   const navigateTo = useNavigate();
   const dispatch = useDispatch();
   const { id: productId } = useParams();
   const { products, currentProduct } = useSelector((state) => state.products);
+  debugger;
   const { pathname } = useLocation();
   const { isLoggedIn } = useSelector((state) => state.account);
   useEffect(() => {
@@ -40,12 +42,12 @@ const ProductDetails = () => {
       <UncontrolledCarousel
         style={{ height: "30rem" }}
         items={
-          Array.isArray(currentProduct?.images)
-            ? currentProduct?.images.map((i, index) => ({
+          Array.isArray(currentProduct?.productImageDatas)
+            ? currentProduct?.productImageDatas.map((i, index) => ({
                 altText: index,
                 caption: "",
                 key: 1,
-                src: i,
+                src: prefixBase64(i.imageData),
               }))
             : []
         }

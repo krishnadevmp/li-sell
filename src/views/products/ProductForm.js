@@ -16,7 +16,7 @@ import "./Products.css";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProductsById, postProduct, putProduct } from "./ProductSlice";
-import { convertToBase64 } from "../../Utils";
+import { toBase64 } from "../../Utils";
 import { Skeleton } from "@mui/material";
 
 const defaultProduct = {
@@ -26,7 +26,7 @@ const defaultProduct = {
   category: 0,
   contactNumber: "",
   address: "",
-  images: [{}],
+  productImageDatas: [{}],
 };
 const ProductForm = () => {
   const location = useLocation();
@@ -46,8 +46,10 @@ const ProductForm = () => {
   useEffect(() => {
     if (!isEdit) {
       setProductData(defaultProduct);
+    } else {
+      setProductData(currentProduct);
     }
-  }, [isEdit]);
+  }, [isEdit, currentProduct]);
 
   useEffect(() => {
     if (id) {
@@ -55,17 +57,13 @@ const ProductForm = () => {
     }
   }, [id]);
 
-  useEffect(() => {
-    setProductData(currentProduct);
-  }, [currentProduct]);
   const onChange = (event) =>
     setProductData((prev) => {
       let { value } = event.target;
-
-      if (event.target.name === "images") {
-        const images = [...prev.images];
+      if (event.target.name === "productImageDatas") {
+        const images = [...prev.productImageDatas];
         images.pop();
-        images.push(convertToBase64(event.target.files[0]));
+        images.push(toBase64(event.target.files[0]));
         value = images;
       }
 
@@ -98,8 +96,8 @@ const ProductForm = () => {
                     id={i}
                     key={index}
                     variant="rectangular"
-                    height="30px"
-                    width="100px"
+                    height="25px"
+                    width="150px"
                   />
                 ) : (
                   <Skeleton
@@ -107,6 +105,9 @@ const ProductForm = () => {
                     key={index}
                     variant="rectangular"
                     height="37.6px"
+                    style={{
+                      marginBottom: "1rem",
+                    }}
                   />
                 )
               )}
@@ -185,11 +186,11 @@ const ProductForm = () => {
                 <FormGroup>
                   <Label>Images</Label>
                   <div className="product-form-file-container">
-                    {productData.images?.map((image, index) => (
+                    {productData.productImageDatas?.map((image, index) => (
                       <div key={index} className="product-form-file">
                         <Input
                           id={`images${index}`}
-                          name="images"
+                          name="productImageDatas"
                           type="file"
                           onChange={onChange}
                         />
@@ -201,7 +202,10 @@ const ProductForm = () => {
                             onClick={() =>
                               setProductData((prev) => ({
                                 ...prev,
-                                images: [...prev.images, {}],
+                                productImageDatas: [
+                                  ...prev.productImageDatas,
+                                  {},
+                                ],
                               }))
                             }
                           >
@@ -214,10 +218,11 @@ const ProductForm = () => {
                             onClick={() =>
                               setProductData((prev) => ({
                                 ...prev,
-                                images: prev.images.filter(
-                                  (_prevImage, prevImageIndex) =>
-                                    prevImageIndex !== index
-                                ),
+                                productImageDatas:
+                                  prev.productImageDatas.filter(
+                                    (_prevImage, prevImageIndex) =>
+                                      prevImageIndex !== index
+                                  ),
                               }))
                             }
                           >

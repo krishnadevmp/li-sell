@@ -1,5 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ServiceCalls } from "../../api/apiService";
+import { toast } from "react-toastify";
+import { trimBase64Prefix } from "../../Utils";
 
 const initialState = {
   products: [],
@@ -55,13 +57,19 @@ export const postProduct = createAsyncThunk(
   "postProduct",
   async (body, { dispatch, rejectWithValue }) => {
     try {
-      const response = await ServiceCalls.post("Product", body);
+      debugger;
+      const productBody = {
+        ...body,
+        imageData: trimBase64Prefix(await body.productImageDatas[0]),
+      };
+      const response = await ServiceCalls.post("Product", productBody);
 
       if (response.status === 201) {
-        if (Object.keys(body.images[0]).length) {
+        debugger;
+        if (Object.keys(body?.productImageDatas ?? {}).length) {
           const productImages = await Promise.all(
-            body.images.map(async (i) => ({
-              imageData: await i,
+            body.productImageDatas.map(async (i) => ({
+              imageData: trimBase64Prefix(await i),
               productId: `${response.data.id}`,
             }))
           );
@@ -187,10 +195,24 @@ export const productSlice = createSlice({
     builder.addCase(postProduct.pending, (state) => {
       state.isLoading = true;
     });
-    builder.addCase(postProduct.fulfilled, (state, action) => {
+    builder.addCase(postProduct.fulfilled, (state) => {
+      toast("Product added", { type: "success" });
       state.isLoading = false;
     });
     builder.addCase(postProduct.rejected, (state, action) => {
+      debugger;
+      toast("Product couldn't be added", { type: "error" });
+      state.isLoading = false;
+    });
+    builder.addCase(putProduct.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(putProduct.fulfilled, (state) => {
+      toast("Product updated", { type: "success" });
+      state.isLoading = false;
+    });
+    builder.addCase(putProduct.rejected, (state, action) => {
+      toast("Product couldn't be updated", { type: "error" });
       state.isLoading = false;
     });
     builder.addCase(fetchProductsById.pending, (state, action) => {
@@ -206,8 +228,11 @@ export const productSlice = createSlice({
     builder.addCase(deleteProduct.pending, (state, action) => {
       state.isLoading = true;
     });
-    builder.addCase(deleteProduct.fulfilled, (state, action) => {});
+    builder.addCase(deleteProduct.fulfilled, (state, action) => {
+      toast("Product deleted", { type: "success" });
+    });
     builder.addCase(deleteProduct.rejected, (state, action) => {
+      toast("Product couldn't be deleted", { type: "error" });
       state.isLoading = false;
     });
   },

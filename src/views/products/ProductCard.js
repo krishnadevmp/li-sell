@@ -9,9 +9,10 @@ import {
   deleteProduct,
   setConfirmationModal,
 } from "./ProductSlice";
+import { prefixBase64 } from "../../Utils";
 
 const ProductCard = ({
-  image = "",
+  imageData = "",
   title = "",
   price = "",
   id = "",
@@ -38,7 +39,12 @@ const ProductCard = ({
       ) : (
         <>
           <div className="product-card-img">
-            <img alt="Card image cap" src={image} width="100%" height="100%" />
+            <img
+              alt="Card image cap"
+              src={prefixBase64(imageData)}
+              width="100%"
+              height="100%"
+            />
           </div>
           <div className="product-card-body">
             <div>
