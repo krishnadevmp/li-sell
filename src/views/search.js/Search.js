@@ -14,6 +14,7 @@ const Search = () => {
         <Input
           placeholder="Search for a product"
           onChange={(e) => {
+            dispatch(searchProduct(e.target.value));
             setSearchValue(e.target.value);
           }}
           onKeyDown={(e) => {
