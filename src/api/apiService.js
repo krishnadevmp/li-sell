@@ -36,7 +36,7 @@ export class ServiceCalls {
     const URL = SERVICE_URL + api;
     return new Promise((resolve, reject) => {
       axios
-        .get(URL, { headers: headers.headers, params })
+        .delete(URL, { headers: headers.headers, params })
         .then((data) => resolve(data))
         .catch((error) => reject(error));
     });

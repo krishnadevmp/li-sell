@@ -1,9 +1,14 @@
 import { Skeleton } from "@mui/material";
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ReactComponent as IconDelete } from "../../assets/images/IconDelete.svg";
 import { ReactComponent as IconEdit } from "../../assets/images/IconEdit.svg";
+import {
+  closeConfirmationModal,
+  deleteProduct,
+  setConfirmationModal,
+} from "./ProductSlice";
 
 const ProductCard = ({
   image = "",
@@ -14,6 +19,7 @@ const ProductCard = ({
 }) => {
   const navigateTo = useNavigate();
   const { pathname } = useLocation();
+  const dispatch = useDispatch();
   const isUsersProduct =
     localStorage.getItem("userName") === postedBy &&
     pathname.includes("/products/user");
@@ -57,6 +63,15 @@ const ProductCard = ({
                     <IconDelete
                       onClick={(e) => {
                         e.stopPropagation();
+                        dispatch(
+                          setConfirmationModal({
+                            isOpen: true,
+                            confirmationMessage: `Are you sure, you want to delete this product, ${title}?`,
+                            title: "Delete product",
+                            onNo: () => dispatch(closeConfirmationModal()),
+                            onYes: () => dispatch(deleteProduct(id)),
+                          })
+                        );
                       }}
                       className="product-card-delete"
                     />

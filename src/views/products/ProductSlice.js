@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ServiceCalls, setHeaders } from "../../api/apiService";
+import { ServiceCalls } from "../../api/apiService";
 
 const initialState = {
   products: [],
@@ -98,6 +98,26 @@ export const putProduct = createAsyncThunk(
   }
 );
 
+export const deleteProduct = createAsyncThunk(
+  "deleteProduct",
+  async (productId, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await ServiceCalls.delete(`Product/${productId}`);
+
+      if (response.status === 200) {
+        dispatch(closeConfirmationModal());
+        dispatch(fetchProducts({}));
+        return response.data;
+      }
+      return {};
+    } catch (error) {
+      // TODO
+      const errorData = JSON.parse(error.response.data);
+      return rejectWithValue(errorData.title);
+    }
+  }
+);
+
 export const postProductImages = createAsyncThunk(
   "postProductImages",
   async (productImages, { rejectWithValue }) => {
@@ -141,6 +161,16 @@ export const productSlice = createSlice({
     setConfirmationModal: (state, action) => {
       state.confirmationModal = action.payload;
     },
+    closeConfirmationModal: (state) => {
+      state.confirmationModal = {
+        isOpen: false,
+        confirmationMessage: "",
+        title: "",
+        toggle: () => {},
+        onYes: () => {},
+        onNo: () => {},
+      };
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchProducts.pending, (state) => {
@@ -159,7 +189,6 @@ export const productSlice = createSlice({
     });
     builder.addCase(postProduct.fulfilled, (state, action) => {
       state.isLoading = false;
-      console.log(action.payload);
     });
     builder.addCase(postProduct.rejected, (state, action) => {
       state.isLoading = false;
@@ -174,10 +203,24 @@ export const productSlice = createSlice({
     builder.addCase(fetchProductsById.rejected, (state, action) => {
       state.isLoading = false;
     });
+    builder.addCase(deleteProduct.pending, (state, action) => {
+      state.isLoading = true;
+    });
+    builder.addCase(deleteProduct.fulfilled, (state, action) => {
+      state.isLoading = false;
+    });
+    builder.addCase(deleteProduct.rejected, (state, action) => {
+      state.isLoading = false;
+    });
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { addProduct, searchProduct } = productSlice.actions;
+export const {
+  addProduct,
+  searchProduct,
+  setConfirmationModal,
+  closeConfirmationModal,
+} = productSlice.actions;
 
 export default productSlice.reducer;
