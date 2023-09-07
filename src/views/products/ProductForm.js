@@ -90,7 +90,7 @@ const ProductForm = () => {
                 padding: "0.625rem",
               }}
             >
-              {Array.from(new Array(15)).map((i, index) =>
+              {Array.from(new Array(12)).map((i, index) =>
                 index % 2 == 0 ? (
                   <Skeleton
                     id={i}
