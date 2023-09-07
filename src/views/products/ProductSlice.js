@@ -206,9 +206,7 @@ export const productSlice = createSlice({
     builder.addCase(deleteProduct.pending, (state, action) => {
       state.isLoading = true;
     });
-    builder.addCase(deleteProduct.fulfilled, (state, action) => {
-      state.isLoading = false;
-    });
+    builder.addCase(deleteProduct.fulfilled, (state, action) => {});
     builder.addCase(deleteProduct.rejected, (state, action) => {
       state.isLoading = false;
     });
