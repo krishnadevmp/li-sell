@@ -1,23 +1,47 @@
-import { useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { UncontrolledCarousel } from "reactstrap";
 import "./Products.css";
+import { ReactComponent as IconEdit } from "../../assets/images/IconEdit.svg";
+import { useEffect } from "react";
+import { fetchProductsById } from "./ProductSlice";
+import { ReactComponent as IconView } from "../../assets/images/IconView.svg";
 
 const ProductDetails = () => {
   const navigateTo = useNavigate();
-  let { id } = useParams();
-  const { products } = useSelector((state) => state.products);
+  const dispatch = useDispatch();
+  const { id: productId } = useParams();
+  const { products, currentProduct } = useSelector((state) => state.products);
+  const { pathname } = useLocation();
   const { isLoggedIn } = useSelector((state) => state.account);
+  useEffect(() => {
+    dispatch(fetchProductsById(productId));
+  }, [productId]);
 
-  const product = products.find((p) => p.id == id);
   return (
     <div className="product-card h-100 product-details">
-      <h6 className="border-bottom p-3 mb-0">{product.title}</h6>
+      <div
+        className="w-100 border-bottom"
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "0.625rem",
+        }}
+      >
+        <h6 className=" p-3 mb-0 w-100">{currentProduct.title}</h6>
+        {currentProduct.postedBy === localStorage.getItem("userName") && (
+          <IconEdit
+            className="icon-edit"
+            onClick={() => navigateTo(`/edit/product/${currentProduct.id}`)}
+          />
+        )}
+      </div>
       <UncontrolledCarousel
         style={{ height: "30rem" }}
         items={
-          Array.isArray(product?.images)
-            ? product?.images.map((i, index) => ({
+          Array.isArray(currentProduct?.images)
+            ? currentProduct?.images.map((i, index) => ({
                 altText: index,
                 caption: "",
                 key: 1,
@@ -28,15 +52,21 @@ const ProductDetails = () => {
       />
       <div className="p-4 product-details-body product-details">
         <h5>Description</h5>
-        {product.description}
+        {currentProduct.description}
         <h6>Price</h6>
-        AED:{` ${product.price}`}
+        AED:{` ${currentProduct.price}`}
         <h6>Contact</h6>
         {isLoggedIn ? (
-          product.contactNumber
+          currentProduct.contactNumber
         ) : (
-          <div onClick={() => navigateTo("/login")} role="button">
-            Show
+          <div
+            onClick={() => {
+              localStorage.setItem("redirectPath", pathname);
+              navigateTo("/login");
+            }}
+            role="button"
+          >
+            <IconView />
           </div>
         )}
       </div>

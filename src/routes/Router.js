@@ -43,7 +43,12 @@ const ThemeRoutes = [
       { path: "/forms", exact: true, element: <Forms /> },
       { path: "/breadcrumbs", exact: true, element: <Breadcrumbs /> },
       { path: "/add/product", exact: true, element: <ProductForm /> },
-      { path: "/edit/product", exact: true, element: <ProductForm /> },
+      {
+        path: "/edit/product/:id",
+        exact: true,
+        element: <ProductForm />,
+      },
+      { path: "/products/user", exact: true, element: <ProductList /> },
       { path: "/products", exact: true, element: <ProductList /> },
       { path: "/product/:id", exact: true, element: <ProductDetails /> },
     ],

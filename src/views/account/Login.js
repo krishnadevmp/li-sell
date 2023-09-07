@@ -35,7 +35,11 @@ const LoginForm = () => {
 
   useEffect(() => {
     if (isLoggedIn) {
-      navigateTo("/products");
+      const redirectPath = localStorage.getItem("redirectPath");
+      if (redirectPath) {
+        navigateTo(redirectPath);
+        localStorage.removeItem("redirectPath");
+      } else navigateTo("/products");
     }
   }, [isLoggedIn]);
 

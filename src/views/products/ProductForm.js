@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   Card,
   Row,
@@ -14,12 +14,14 @@ import {
 import { categories } from "./Constants";
 import "./Products.css";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { addProduct, postProduct } from "./ProductSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProductsById, postProduct, putProduct } from "./ProductSlice";
 import { convertToBase64 } from "../../Utils";
 
 const ProductForm = () => {
   const location = useLocation();
+  const { id } = useParams();
+  const { currentProduct } = useSelector((state) => state.products);
   const navigateTo = useNavigate();
   const isEdit = location.pathname.includes("edit");
   const [productData, setProductData] = useState({
@@ -32,15 +34,24 @@ const ProductForm = () => {
     images: [{}],
   });
   const dispatch = useDispatch();
+  const { isLoading } = useSelector((state) => state.products);
   useEffect(() => {
     if (!localStorage.getItem("userName")) {
       navigateTo("/login");
     }
   });
+
+  useEffect(() => {
+    dispatch(fetchProductsById(id));
+  }, [id]);
+
+  useEffect(() => {
+    setProductData(currentProduct);
+  }, [currentProduct]);
   const onChange = (event) =>
-    setProductData(async (prev) => {
+    setProductData((prev) => {
       let { value } = event.target;
-      debugger;
+
       if (event.target.name === "images") {
         const images = [...prev.images];
         images.pop();
@@ -144,6 +155,7 @@ const ProductForm = () => {
                       />
                       {index === 0 ? (
                         <Button
+                          disabled={isLoading}
                           title="Add more images"
                           color="primary"
                           onClick={() =>
@@ -157,6 +169,7 @@ const ProductForm = () => {
                         </Button>
                       ) : (
                         <Button
+                          disabled={isLoading}
                           className="product-form-cancel-button"
                           onClick={() =>
                             setProductData((prev) => ({
@@ -178,6 +191,7 @@ const ProductForm = () => {
               <div className="product-form-buttons">
                 <div>
                   <Button
+                    disabled={isLoading}
                     onClick={() => navigateTo("/products")}
                     type="reset"
                     className="product-form-cancel-button"
@@ -187,15 +201,20 @@ const ProductForm = () => {
                 </div>
                 <div>
                   <Button
+                    disabled={isLoading}
                     type="button"
                     color="primary"
                     onClick={() => {
-                      dispatch(
-                        postProduct({
-                          ...productData,
-                          postedBy: localStorage.getItem("userName"),
-                        })
-                      );
+                      if (isEdit) {
+                        dispatch(putProduct(productData));
+                      } else {
+                        dispatch(
+                          postProduct({
+                            ...productData,
+                            postedBy: localStorage.getItem("userName"),
+                          })
+                        );
+                      }
                     }}
                   >{`${isEdit ? "Update" : "Add"}`}</Button>
                 </div>

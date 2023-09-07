@@ -12,7 +12,7 @@ export class ServiceCalls {
     });
   }
 
-  static post(api, body, headers, params) {
+  static post(api, body, headers = setHeaders(), params) {
     const URL = SERVICE_URL + api;
     return new Promise((resolve, reject) => {
       axios
@@ -22,7 +22,7 @@ export class ServiceCalls {
     });
   }
 
-  static put(api, body, headers, params) {
+  static put(api, body, headers = setHeaders(), params) {
     const URL = SERVICE_URL + api;
     return new Promise((resolve, reject) => {
       axios
@@ -32,7 +32,7 @@ export class ServiceCalls {
     });
   }
 
-  static delete(api, headers, params) {
+  static delete(api, headers = setHeaders(), params) {
     const URL = SERVICE_URL + api;
     return new Promise((resolve, reject) => {
       axios
@@ -43,9 +43,9 @@ export class ServiceCalls {
   }
 }
 
-export const setHeaders = () => {
+export const setHeaders = (contentType = "application/json; charset=utf-8") => {
   const headers = {
-    "Content-Type": "application/json; charset=utf-8",
+    "Content-Type": contentType,
     Accept: "application/json",
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET, POST, PATCH, PUT, DELETE, OPTIONS",

@@ -107,7 +107,9 @@ const Header = () => {
               ></img>
             </DropdownToggle>
             <DropdownMenu>
-              <DropdownItem>My products</DropdownItem>
+              <DropdownItem onClick={() => navigateTo("/products/user")}>
+                My products
+              </DropdownItem>
               <DropdownItem
                 onClick={() => {
                   dispatch(logout());

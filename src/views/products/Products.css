@@ -86,6 +86,7 @@
 .product-card-button-container div {
   display: flex;
   gap: 0.2rem;
+  justify-content: space-between;
 }
 
 .product-details {
@@ -106,4 +107,21 @@
 
 .carousel-item img {
   height: 30rem;
+}
+
+.product-card-delete {
+  color: #778187;
+  cursor: pointer;
+}
+
+.product-card-delete:hover {
+  color: red;
+}
+
+.icon-edit {
+  color: #778187;
+}
+
+.icon-edit:hover {
+  color: black;
 }

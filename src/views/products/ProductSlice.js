@@ -1,11 +1,15 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ServiceCalls } from "../../api/apiService";
+import { ServiceCalls, setHeaders } from "../../api/apiService";
 
 const initialState = {
   products: [],
+  currentProduct: {},
   searchResultProducts: [],
   isSearched: false,
   isLoading: false,
+  confirmationModal: {
+    isOpen: false,
+  },
 };
 
 export const fetchProducts = createAsyncThunk(
@@ -30,23 +34,59 @@ export const fetchProducts = createAsyncThunk(
   }
 );
 
+export const fetchProductsById = createAsyncThunk(
+  "fetchProductsById",
+  async (productId, { rejectWithValue }) => {
+    try {
+      const response = await ServiceCalls.get(`Product/${productId}`);
+      if (response.status === 200) {
+        return response.data;
+      }
+      return {};
+    } catch (error) {
+      // TODO
+      const errorData = JSON.parse(error.response.data);
+      return rejectWithValue(errorData.title);
+    }
+  }
+);
+
 export const postProduct = createAsyncThunk(
   "postProduct",
   async (body, { dispatch, rejectWithValue }) => {
     try {
-      debugger;
       const response = await ServiceCalls.post("Product", body);
 
       if (response.status === 201) {
-        debugger;
-        const productImages = await Promise.all(
-          body.images.map(async (i) => ({
-            imageData: await i,
-            productId: `${response.data.id}`,
-          }))
-        );
+        if (Object.keys(body.images[0]).length) {
+          const productImages = await Promise.all(
+            body.images.map(async (i) => ({
+              imageData: await i,
+              productId: `${response.data.id}`,
+            }))
+          );
 
-        dispatch(postProductImages(productImages));
+          dispatch(postProductImages(productImages));
+        }
+
+        return response.data;
+      }
+      return {};
+    } catch (error) {
+      // TODO
+      const errorData = JSON.parse(error.response.data);
+      return rejectWithValue(errorData.title);
+    }
+  }
+);
+
+export const putProduct = createAsyncThunk(
+  "putProduct",
+  async (body, { rejectWithValue }) => {
+    try {
+      const response = await ServiceCalls.put(`Product/${body.id}`, body);
+
+      if (response.status === 200) {
         return response.data;
       }
       return {};
@@ -62,7 +102,6 @@ export const postProductImages = createAsyncThunk(
   "postProductImages",
   async (productImages, { rejectWithValue }) => {
     try {
-      debugger;
       productImages.forEach((productImage) => {
         ServiceCalls.post("Image", productImage);
       });
@@ -99,6 +138,9 @@ export const productSlice = createSlice({
     setIsSearched: (state, action) => {
       state.isSearched = action.payload;
     },
+    setConfirmationModal: (state, action) => {
+      state.confirmationModal = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchProducts.pending, (state) => {
@@ -120,6 +162,16 @@ export const productSlice = createSlice({
       console.log(action.payload);
     });
     builder.addCase(postProduct.rejected, (state, action) => {
+      state.isLoading = false;
+    });
+    builder.addCase(fetchProductsById.pending, (state, action) => {
+      state.isLoading = true;
+    });
+    builder.addCase(fetchProductsById.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.currentProduct = action.payload;
+    });
+    builder.addCase(fetchProductsById.rejected, (state, action) => {
       state.isLoading = false;
     });
   },
